@@ -1,8 +1,8 @@
-import React, { PropTypes } from "react";
+import React from "react";
 import Radium from "radium";
 import _ from "lodash";
 import d3Scale from "d3-scale";
-import Util from "victory-util";
+import {Chart, Collection, PropTypes, Style} from "victory-util";
 import { VictoryAnimation } from "victory-animation";
 import Bar from "./bar";
 import BarLabel from "./bar-label";
@@ -40,7 +40,7 @@ export default class VictoryBar extends React.Component {
      * Large datasets might animate slowly due to the inherent limits of svg rendering.
      * @examples {velocity: 0.02, onEnd: () => alert("done!")}
      */
-    animate: PropTypes.object,
+    animate: React.PropTypes.object,
     /**
      * The data prop specifies the data to be plotted. Data should be in the form of an array
      * of data points, or an array of arrays of data points for multiple datasets.
@@ -48,18 +48,18 @@ export default class VictoryBar extends React.Component {
      * @examples [{x: 1, y:2}, {x: 2, y: 3}],
      * [[{x: "a", y: 1}, {x: "b", y: 2}], [{x: "a", y: 2}, {x: "b", y: 3}]]
      */
-    data: PropTypes.oneOfType([
-      PropTypes.arrayOf(
-        PropTypes.shape({
-          x: PropTypes.any,
-          y: PropTypes.any
+    data: React.PropTypes.oneOfType([
+      React.PropTypes.arrayOf(
+        React.PropTypes.shape({
+          x: React.PropTypes.any,
+          y: React.PropTypes.any
         })
       ),
-      PropTypes.arrayOf(
-        PropTypes.arrayOf(
-          PropTypes.shape({
-            x: PropTypes.any,
-            y: PropTypes.any
+      React.PropTypes.arrayOf(
+        React.PropTypes.arrayOf(
+          React.PropTypes.shape({
+            x: React.PropTypes.any,
+            y: React.PropTypes.any
           })
         )
       )
@@ -71,9 +71,9 @@ export default class VictoryBar extends React.Component {
      * be applied to the data points in the corresponding array of the data prop.
      * @examples {fill: "blue", opacity: 0.6}, [{fill: "red"}, {fill: "orange"}]
      */
-    dataAttributes: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.arrayOf(PropTypes.object)
+    dataAttributes: React.PropTypes.oneOfType([
+      React.PropTypes.object,
+      React.PropTypes.arrayOf(PropTypes.object)
     ]),
     /**
      * The categories prop specifies the categories for a bar chart. This prop should
@@ -82,7 +82,7 @@ export default class VictoryBar extends React.Component {
      * allowing numeric data to be grouped into segments.
      * @examples ["dogs", "cats", "mice"], [[0, 5], [5, 10], [10, 15]]
      */
-    categories: Util.PropTypes.homogeneousArray,
+    categories: PropTypes.homogeneousArray,
     /**
      * The colorScale prop is an optional prop that defines the color scale the chart's bars
      * will be created on. This prop should be given as an array of CSS colors, or as a string
@@ -90,9 +90,9 @@ export default class VictoryBar extends React.Component {
      * values from this color scale to the bars unless colors are explicitly provided in the
      * `dataAttributes` prop.
      */
-    colorScale: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.string),
-      PropTypes.oneOf([
+    colorScale: React.PropTypes.oneOfType([
+      React.PropTypes.arrayOf(PropTypes.string),
+      React.PropTypes.oneOf([
         "greyscale", "qualitative", "heatmap", "warm", "cool", "red", "green", "blue"
       ])
     ]),
@@ -104,11 +104,11 @@ export default class VictoryBar extends React.Component {
      * available information.
      * @examples [-1, 1], {x: [0, 100], y: [0, 1]}
      */
-    domain: PropTypes.oneOfType([
-      Util.PropTypes.domain,
-      PropTypes.shape({
-        x: Util.PropTypes.domain,
-        y: Util.PropTypes.domain
+    domain: React.PropTypes.oneOfType([
+      PropTypes.domain,
+      React.PropTypes.shape({
+        x: PropTypes.domain,
+        y: PropTypes.domain
       })
     ]),
     /**
@@ -116,23 +116,23 @@ export default class VictoryBar extends React.Component {
      * beginning and end of a domain. This prop is useful for preventing 0 pixel bars,
      * and taking bar width into account.
      */
-    domainPadding: PropTypes.oneOfType([
+    domainPadding: React.PropTypes.oneOfType([
       React.PropTypes.shape({
-        x: Util.PropTypes.nonNegative,
-        y: Util.PropTypes.nonNegative
+        x: PropTypes.nonNegative,
+        y: PropTypes.nonNegative
       }),
-      Util.PropTypes.nonNegative
+      PropTypes.nonNegative
     ]),
     /**
      * The height props specifies the height of the chart container element in pixels
      */
-    height: Util.PropTypes.nonNegative,
+    height: PropTypes.nonNegative,
     /**
      * The horizontal prop determines whether the bars will be laid vertically or
      * horizontally. The bars will be vertical if this prop is false or unspecified,
      * or horizontal if the prop is set to true.
      */
-    horizontal: PropTypes.bool,
+    horizontal: React.PropTypes.bool,
     /**
      * The labels prop defines labels that will appear above each bar or
      * group of bars in your bar chart. This prop should be given as an array of values.
@@ -142,26 +142,26 @@ export default class VictoryBar extends React.Component {
      * and groups of bars.
      * @examples: ["spring", "summer", "fall", "winter"]
      */
-    labels: PropTypes.array,
+    labels: React.PropTypes.array,
     /**
      * The labelComponents prop takes in an array of entire, HTML-complete label components
      * which will be used to create labels for individual bars, stacked bars, or groups of
      * bars as appropriate.
      */
-    labelComponents: PropTypes.array,
+    labelComponents: React.PropTypes.array,
     /**
      * The padding props specifies the amount of padding in number of pixels between
      * the edge of the chart and any rendered child components. This prop can be given
      * as a number or as an object with padding specified for top, bottom, left
      * and right.
      */
-    padding: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.shape({
-        top: PropTypes.number,
-        bottom: PropTypes.number,
-        left: PropTypes.number,
-        right: PropTypes.number
+    padding: React.PropTypes.oneOfType([
+      React.PropTypes.number,
+      React.PropTypes.shape({
+        top: React.PropTypes.number,
+        bottom: React.PropTypes.number,
+        left: React.PropTypes.number,
+        right: React.PropTypes.number
       })
     ]),
     /**
@@ -169,39 +169,39 @@ export default class VictoryBar extends React.Component {
      * given as a function, or as an object that specifies separate functions for x and y.
      * @examples d3Scale.time(), {x: d3Scale.linear(), y: d3Scale.log()}
      */
-    scale: PropTypes.oneOfType([
-      Util.PropTypes.scale,
-      PropTypes.shape({
-        x: Util.PropTypes.scale,
-        y: Util.PropTypes.scale
+    scale: React.PropTypes.oneOfType([
+      PropTypes.scale,
+      React.PropTypes.shape({
+        x: PropTypes.scale,
+        y: PropTypes.scale
       })
     ]),
     /**
      * The stacked prop determines whether the chart should consist of stacked bars.
      * When this prop is set to false, grouped bars will be rendered instead.
      */
-    stacked: PropTypes.bool,
+    stacked: React.PropTypes.bool,
     /**
      * The standalone prop determines whether the component will render a standalone svg
      * or a <g> tag that will be included in an external svg. Set standalone to false to
      * compose VictoryBar with other components within an enclosing <svg> tag.
      */
-    standalone: PropTypes.bool,
+    standalone: React.PropTypes.bool,
     /**
      * The style prop specifies styles for your chart. VictoryBar relies on Radium,
      * so valid Radium style objects should work for this prop, however height, width, and margin
      * are used to calculate range, and need to be expressed as a number of pixels
      * @examples {data: {fill: "red", width: 8}, labels: {fontSize: 12}}
      */
-    style: PropTypes.shape({
-      parent: PropTypes.object,
-      data: PropTypes.object,
-      labels: PropTypes.object
+    style: React.PropTypes.shape({
+      parent: React.PropTypes.object,
+      data: React.PropTypes.object,
+      labels: React.PropTypes.object
     }),
     /**
      * The width props specifies the width of the chart container element in pixels
      */
-    width: Util.PropTypes.nonNegative
+    width: PropTypes.nonNegative
   };
 
   static defaultProps = {
@@ -218,15 +218,15 @@ export default class VictoryBar extends React.Component {
 
   getCalculatedValues(props) {
     this.style = this.getStyles(props);
-    this.padding = this.getPadding(props);
+    this.padding = Chart.getPadding(props);
     this.stringMap = {
       x: this.createStringMap(props, "x"),
       y: this.createStringMap(props, "y")
     };
     this.datasets = this.consolidateData(props);
     this.range = {
-      x: this.getRange(props, "x"),
-      y: this.getRange(props, "y")
+      x: Chart.getRange(props, "x"),
+      y: Chart.getRange(props, "y")
     };
     this.domain = {
       x: this.getDomain(props, "x"),
@@ -245,17 +245,6 @@ export default class VictoryBar extends React.Component {
       parent: _.merge({height: props.height, width: props.width}, parent),
       data: _.merge({}, defaultStyles.data, data),
       labels: _.merge({}, defaultStyles.labels, labels)
-    };
-  }
-
-  getPadding(props) {
-    const padding = _.isNumber(props.padding) ? props.padding : 0;
-    const paddingObj = _.isObject(props.padding) ? props.padding : {};
-    return {
-      top: paddingObj.top || padding,
-      bottom: paddingObj.bottom || padding,
-      left: paddingObj.left || padding,
-      right: paddingObj.right || padding
     };
   }
 
@@ -310,14 +299,14 @@ export default class VictoryBar extends React.Component {
       return props.style.data.fill;
     }
     const colorScale = _.isArray(props.colorScale) ?
-      props.colorScale : Util.Style.getColorScale(props.colorScale);
+      props.colorScale : Style.getColorScale(props.colorScale);
     return colorScale[index % colorScale.length];
   }
 
   createStringMap(props, axis) {
     // if categories exist and are strings, create a map using only those strings
     // don't alter the order.
-    if (props.categories && Util.Collection.containsStrings(props.categories)) {
+    if (props.categories && Collection.containsStrings(props.categories)) {
       return _.zipObject(_.map(props.categories, (tick, index) => {
         return [`${tick}`, index + 1];
       }));
@@ -356,15 +345,6 @@ export default class VictoryBar extends React.Component {
     return scale;
   }
 
-  getRange(props, axis) {
-    // determine how to lay the axis and what direction positive and negative are
-    const isVertical =
-      !this.props.horizontal && axis === "x" || this.props.horizontal && axis !== "x";
-
-    return isVertical ? [this.padding.left, props.width - this.padding.right] :
-      [props.height - this.padding.bottom, this.padding.top];
-  }
-
   getDomain(props, axis) {
     let domain;
     const categoryDomain = this.getDomainFromCategories(props, axis);
@@ -375,103 +355,17 @@ export default class VictoryBar extends React.Component {
     } else if (categoryDomain) {
       domain = categoryDomain;
     } else {
-      domain = this.getDomainFromData(props, axis);
+      domain = Chart.getDomainFromGroupedData(this.datasets, props, axis);
     }
-    return this.padDomain(domain, axis);
-  }
-
-  padDomain(domain, axis) {
-    let domainPadding;
-    if (this.props.domainPadding[axis]) {
-      domainPadding = this.props.domainPadding[axis];
-    } else {
-      domainPadding = _.isNumber(this.props.domainPadding) ? this.props.domainPadding : 0;
-    }
-    if (domainPadding === 0) {
-      return domain;
-    }
-    const domainMin = Math.min(...domain);
-    const domainMax = Math.max(...domain);
-    const rangeExtent = Math.abs(Math.max(...this.range[axis]) - Math.min(...this.range[axis]));
-    const extent = Math.abs(domainMax - domainMin);
-    const percentPadding = domainPadding / rangeExtent;
-    const padding = extent * percentPadding;
-    // don't make the axes cross if they aren't already
-    const adjustedMin = (domainMin >= 0 && (domainMin - padding) <= 0) ?
-      0 : domainMin.valueOf() - padding;
-    const adjustedMax = (domainMax <= 0 && (domainMax + padding) >= 0) ?
-      0 : domainMax.valueOf() + padding;
-    return _.isDate(domainMin) || _.isDate(domainMax) ?
-      [new Date(adjustedMin), new Date(adjustedMax)] : [adjustedMin, adjustedMax];
+    return Chart.padDomain(domain, axis);
   }
 
   getDomainFromCategories(props, axis) {
-    if (axis !== "x" || !props.categories || Util.Collection.containsStrings(props.categories)) {
+    if (axis !== "x" || !props.categories || Collection.containsStrings(props.categories)) {
       return undefined;
     }
     const categories = _.flatten(props.categories);
     return [Math.min(...categories), Math.max(...categories)];
-  }
-
-  getDomainFromData(props, axis) {
-    // find the global min and max
-    const datasets = this.datasets.map((dataset) => dataset.data);
-    const axisData = _.flatten(datasets).map((data) => data[axis]);
-    const globalMin = Math.min(...axisData);
-    const globalMax = Math.max(...axisData);
-
-    // find the cumulative max for stacked chart types
-    // this is only sensible for the y domain
-    // TODO check assumption
-    const cumulativeData = (props.stacked && axis === "y" && this.datasets.length > 1) ?
-      this.getCumulativeData(datasets, "y") : [];
-
-    const cumulativeMaxArray = cumulativeData.map((dataset) => {
-      return dataset.reduce((memo, val) => {
-        return val > 0 ? memo + val : memo;
-      }, 0);
-    });
-
-    const cumulativeMinArray = cumulativeData.map((dataset) => {
-      return dataset.reduce((memo, val) => {
-        return val < 0 ? memo + val : memo;
-      }, 0);
-    });
-
-    const cumulativeMin = Math.min(...cumulativeMinArray);
-    // use greatest min / max
-    const domainMin = cumulativeMin < 0 ? cumulativeMin : globalMin;
-    const domainMax = Math.max(globalMax, Math.max(...cumulativeMaxArray));
-    return [domainMin, domainMax];
-  }
-
-  getCumulativeData(datasets, axis) {
-    const categories = [];
-    const xValues = [];
-    datasets.forEach((dataset) => {
-      dataset.forEach((data) => {
-        if (data.category !== undefined && !_.includes(categories, data.category)) {
-          categories.push(data.category);
-        } else if (!_.includes(xValues, data.x)) {
-          xValues.push(data.x);
-        }
-      });
-    });
-
-    const dataByCategory = () => {
-      return categories.map((value) => {
-        const categoryData = datasets.filter((data) => data.category === value);
-        return _.flatten(categoryData.map((data) => data[axis]));
-      });
-    };
-
-    const dataByIndex = () => {
-      return xValues.map((value, index) => {
-        return datasets.map((data) => data[index] && data[index][axis]);
-      });
-    };
-
-    return _.isEmpty(categories) ? dataByIndex() : dataByCategory();
   }
 
   pixelsToValue(pixels, axis) {
