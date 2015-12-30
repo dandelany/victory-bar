@@ -223,6 +223,7 @@ export default class VictoryBar extends React.Component {
       x: this.createStringMap(props, "x"),
       y: this.createStringMap(props, "y")
     };
+    console.log(this.stringMap)
     this.datasets = this.consolidateData(props);
     this.range = {
       x: Chart.getRange(props, "x"),
