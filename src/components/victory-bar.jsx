@@ -2,7 +2,7 @@ import React from "react";
 import Radium from "radium";
 import _ from "lodash";
 import d3Scale from "d3-scale";
-import {Chart, Collection, PropTypes, Style} from "victory-util";
+import {Chart, Collection, Data, PropTypes, Scale, Style} from "victory-util";
 import { VictoryAnimation } from "victory-animation";
 import Bar from "./bar";
 import BarLabel from "./bar-label";
@@ -220,11 +220,10 @@ export default class VictoryBar extends React.Component {
     this.style = this.getStyles(props);
     this.padding = Chart.getPadding(props);
     this.stringMap = {
-      x: this.createStringMap(props, "x"),
-      y: this.createStringMap(props, "y")
+      x: Data.createStringMap(props, "x"),
+      y: Data.createStringMap(props, "y")
     };
-    console.log(this.stringMap)
-    this.datasets = this.consolidateData(props);
+    this.datasets = Data.consolidateData(props);
     this.range = {
       x: Chart.getRange(props, "x"),
       y: Chart.getRange(props, "y")
@@ -249,98 +248,8 @@ export default class VictoryBar extends React.Component {
     };
   }
 
-  consolidateData(props) {
-    const dataFromProps = _.isArray(props.data[0]) ? props.data : [props.data];
-    return _.map(dataFromProps, (dataset, index) => {
-      return {
-        attrs: this.getAttributes(props, index),
-        data: _.map(dataset, (data) => {
-          return _.merge(data, {
-            // determine category if it exists
-            category: this.determineCategoryIndex(data.x, props.categories),
-            // map string data to numeric values, and add names
-            x: _.isString(data.x) ? this.stringMap.x[data.x] : data.x,
-            xName: _.isString(data.x) ? data.x : undefined,
-            y: _.isString(data.y) ? this.stringMap.y[data.y] : data.y,
-            yName: _.isString(data.y) ? data.y : undefined
-          });
-        })
-      };
-    });
-  }
-
-  determineCategoryIndex(x, categories) {
-    // if categories don't exist or are not given as an array of arrays, return undefined;
-    if (!categories || !_.isArray(categories[0])) {
-      return undefined;
-    }
-    // determine which range band this x value belongs to, and return the index of that range band.
-    return categories.findIndex((category) => {
-      return (x >= Math.min(...category) && x <= Math.max(...category));
-    });
-  }
-
-  getAttributes(props, index) {
-    let attributes = props.dataAttributes && props.dataAttributes[index] ?
-      props.dataAttributes[index] : props.dataAttributes;
-    if (attributes) {
-      attributes.fill = attributes.fill || this.getColor(props, index);
-    } else {
-      attributes = {fill: this.getColor(props, index)};
-    }
-    const requiredAttributes = {
-      name: attributes && attributes.name ? attributes.name : `data-${index}`
-    };
-    return _.merge(requiredAttributes, attributes);
-  }
-
-  getColor(props, index) {
-    // check for styles first
-    if (props.style && props.style.data && props.style.data.fill) {
-      return props.style.data.fill;
-    }
-    const colorScale = _.isArray(props.colorScale) ?
-      props.colorScale : Style.getColorScale(props.colorScale);
-    return colorScale[index % colorScale.length];
-  }
-
-  createStringMap(props, axis) {
-    // if categories exist and are strings, create a map using only those strings
-    // don't alter the order.
-    if (props.categories && Collection.containsStrings(props.categories)) {
-      return _.zipObject(_.map(props.categories, (tick, index) => {
-        return [`${tick}`, index + 1];
-      }));
-    }
-    // collect strings from data
-    const data = _.isArray(props.data) ? _.flattenDeep(props.data) : props.data;
-    // create a unique, sorted set of strings
-    const stringData = _.chain(data)
-      .pluck(axis)
-      .map((datum) => {
-        return _.isString(datum) ? datum : null;
-      })
-      .compact()
-      .uniq()
-      .sort()
-      .value();
-
-    return _.isEmpty(stringData) ?
-      null :
-      _.zipObject(_.map(stringData, (string, index) => {
-        return [string, index + 1];
-      }));
-  }
-
   getScale(props, axis) {
-    let scale;
-    if (props.scale && props.scale[axis]) {
-      scale = props.scale[axis].copy();
-    } else if (props.scale && !_.isObject(props.scale)) {
-      scale = props.scale.copy();
-    } else {
-      scale = d3Scale.linear().copy();
-    }
+    const scale = Scale.getBaseScale(props, axis);
     scale.range(this.range[axis]);
     scale.domain(this.domain[axis]);
     return scale;
@@ -356,7 +265,7 @@ export default class VictoryBar extends React.Component {
     } else if (categoryDomain) {
       domain = categoryDomain;
     } else {
-      domain = Chart.getDomainFromGroupedData(this.datasets, props, axis);
+      domain = Chart.getDomainFromGroupedData(props, axis);
     }
     return Chart.padDomain(domain, axis);
   }

@@ -24,7 +24,7 @@
     "builder-victory-component": "~0.0.5",
     "d3-scale": "^0.2.0",
     "victory-animation": "^0.0.13",
-    "victory-util": "git+https://github.com/formidablelabs/victory-util#76d1528",
+    "victory-util": "git+https://github.com/formidablelabs/victory-util#ea73df2",
     "victory-label": "^0.1.8"
   },
   "devDependencies": {
